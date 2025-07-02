@@ -5,41 +5,35 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base: process.env.NODE_ENV === 'production' ? '/your-repo-name/' : '/',
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "."),
+      "@": path.resolve(__dirname, "./src"),
+      "@/components": path.resolve(__dirname, "./components"),
+      "@/lib": path.resolve(__dirname, "./lib"),
+      "@/styles": path.resolve(__dirname, "./styles"),
     },
-  },
-  server: {
-    port: 3000,
-    host: true,
-    hmr: {
-      overlay: false
-    }
   },
   build: {
     outDir: 'dist',
+    assetsDir: 'assets',
     sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
-          'firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage'],
-          'ui': ['lucide-react', 'framer-motion'],
-          'vendor': ['react', 'react-dom']
-        }
-      }
-    }
+          vendor: ['react', 'react-dom'],
+          ui: ['framer-motion', 'lucide-react'],
+          firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore'],
+        },
+      },
+    },
   },
-  define: {
-    // Explicitly define global variables for better compatibility
-    global: 'globalThis',
+  server: {
+    port: 5173,
+    host: true,
   },
-  optimizeDeps: {
-    include: [
-      'firebase/app',
-      'firebase/auth', 
-      'firebase/firestore',
-      'firebase/storage'
-    ]
-  }
+  preview: {
+    port: 4173,
+    host: true,
+  },
 })
